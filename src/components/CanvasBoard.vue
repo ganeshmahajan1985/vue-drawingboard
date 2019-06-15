@@ -4,7 +4,7 @@
       <div class='canvascontainer_buttons'>
         <div class='canvascontainer_buttons__pencileraser'>
           <button @click='Pencil'>Pencil</button>
-          <button @click='Eraser'>Eraser</button>
+          <button @click='selectEraser'>Eraser</button>
         </div>
         <div class='canvascontainer_buttons__redoundo'>
           <button @click='Undo'>Undo</button>
@@ -16,9 +16,10 @@
         height='500'
         ref='canvas'
         id='drawing-pad'
-         v-on:mousedown="onMouseDown"
-          v-on:mouseup="onMouseUp"
-          v-on:mousemove="onMouseMove"
+        v-on:mousedown="onMouseDown"
+        v-on:mouseup="onMouseUp"
+         v-on:mousemove="onMouseMove"
+             v-on:mouseout="onMouseOut"
 
       >This is a drawing pad for Incubit</canvas>
        <div ref="cursor" class="cursor" :style="cursorStyle"></div>
@@ -103,20 +104,21 @@ export default {
       const y = e.y + this.canvasTop;
       const cursor = this.$refs.cursor;
 
-      cursor.style.transform = `translate(${x}px, ${y}px)`;
+      cursor.style.transform = `translate(${x - 7}px, ${y - 7}px)`;
     },
     onMouseUp(e) {
-      const vm = this;
-      vm.isDrawing = false;
-      if (vm.points.length > 0) {
-        localStorage.setItem('points', JSON.stringify(vm.points));
-      }
+      this.isDrawing = false;
+    },
+    onMouseOut() {
+      this.isDrawing = false;
     },
     Pencil() {
-      return true;
+      this.selectedColor = '#000000';
+      this.isEraser = false;
     },
-    Eraser() {
-      return true;
+    selectEraser() {
+      this.selectedColor = '#FFFFFF';
+      this.isEraser = true;
     },
     Undo() {
       return true;
